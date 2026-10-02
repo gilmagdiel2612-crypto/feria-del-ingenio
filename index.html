@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Feria del Ingenio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Papel cuadriculado de laboratorio. Cada sección lleva la etiqueta del área científica que inspira su metáfora. */
+:root {
+  --bg: #EDF1F5; --grid: rgba(35, 64, 140, .07); --surface: #FFFFFF; --surface-2: #F4F7FA;
+  --ink: #0F1A2A; --muted: #586779; --line: #D6DEE7; --accent: #2340C9; --accent-ink: #FFFFFF;
+  --c-pr: #DA5229; --c-se: #B97C00; --c-un: #0B8A7D; --c-do: #6844CC; --c-pf: #2569CC;
+  --c-h: #2A5DB0; --c-m: #B83D78; --ok: #1D8549; --danger: #C2362B;
+  --shadow: 0 1px 0 rgba(15, 26, 42, .04), 0 8px 24px -12px rgba(15, 26, 42, .18);
+  --f-display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --f-body: "Instrument Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0A111C; --grid: rgba(140, 170, 230, .065); --surface: #111B2B; --surface-2: #0D1624;
+    --ink: #E6ECF5; --muted: #8E9CB1; --line: #24324A; --accent: #8399FF; --accent-ink: #0A111C;
+    --c-pr: #FF8763; --c-se: #F0B43C; --c-un: #3FC8B7; --c-do: #A98EFF; --c-pf: #66A6FF;
+    --c-h: #6FA0F0; --c-m: #F07DB3; --ok: #4CC07E; --danger: #FF6D60;
+    --shadow: 0 1px 0 rgba(0, 0, 0, .3), 0 10px 28px -14px rgba(0, 0, 0, .7);
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background-color: var(--bg);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+[hidden] { display: none !important; }
+.wrap { margin: 0 auto; padding-inline: 20px; padding-block: 20px 72px; display: grid; gap: 18px; }
+.wrap.pub { max-width: 560px; }
+.wrap.adm { max-width: 1180px; }
+svg.i { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a { color: var(--accent); }
+
+.top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px 24px; }
+.brand { display: grid; gap: 6px; min-width: 0; }
+.eyebrow { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 7px; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(1.9rem, 8vw, 3.1rem); line-height: 1; letter-spacing: -.02em; margin: 0; text-wrap: balance; }
+h1 .dot { color: var(--accent); }
+h2 { font-family: var(--f-display); font-weight: 500; font-size: 18px; margin: 4px 0 0; letter-spacing: -.01em; text-wrap: balance; }
+.pill { display: inline-flex; align-items: baseline; gap: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; font-size: 13px; color: var(--muted); width: fit-content; }
+.pill b { font-family: var(--f-mono); font-weight: 600; color: var(--ink); font-size: 15px; font-variant-numeric: tabular-nums; }
+.lead { margin: 0; color: var(--muted); font-size: 15.5px; max-width: 46ch; }
+
+.areas { list-style: none; margin: 0; padding: 10px 0 0; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px 16px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.areas li { display: inline-flex; align-items: center; gap: 6px; }
+
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); min-width: 0; }
+
+/* Formulario */
+.sec { padding: 18px 20px; display: grid; gap: 12px; border: 0; margin: 0; min-width: 0; }
+.sec + .sec { border-top: 1px dashed var(--line); }
+.sec legend { padding: 0; float: left; width: 100%; }
+.lab-title { display: block; font-weight: 600; font-size: 16px; margin-top: 4px; }
+.field { width: 100%; padding: 13px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-size: 17px; }
+.field::placeholder { color: var(--muted); opacity: .7; }
+.field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); background: var(--surface); }
+.sexo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.opt { cursor: pointer; border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface-2); transition: border-color .15s, background-color .15s, transform .1s; user-select: none; -webkit-tap-highlight-color: transparent; }
+.opt:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--line)); }
+.opt:active { transform: scale(.98); }
+input.sr:checked + .opt { border-color: var(--c); background: color-mix(in srgb, var(--c) 13%, var(--surface)); }
+input.sr:focus-visible + .opt { outline: 2px solid var(--accent); outline-offset: 2px; }
+.sx { display: flex; align-items: center; gap: 12px; padding: 14px; }
+.sx svg { width: 30px; height: 30px; stroke: var(--c); fill: none; stroke-width: 2.2; stroke-linecap: round; flex: none; }
+.sx b { font-size: 16px; }
+.grp { display: grid; gap: 8px; }
+.grp-h { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.tiles { display: grid; gap: 10px; }
+.tiles.t2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tiles.t3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.el { display: grid; grid-template-rows: auto 1fr auto; padding: 8px 10px 9px; min-height: 96px; }
+.el-top { font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.el-sym { font-family: var(--f-display); font-weight: 700; font-size: 28px; line-height: 1; color: var(--c); align-self: center; letter-spacing: -.02em; }
+.el-name { font-size: 12.5px; font-weight: 600; line-height: 1.2; }
+.submit { padding: 16px 20px 20px; border-top: 1px dashed var(--line); display: grid; gap: 10px; }
+.err { margin: 0; color: var(--danger); font-size: 14px; font-weight: 500; }
+.btn-main { appearance: none; border: 0; cursor: pointer; background: var(--accent); color: var(--accent-ink); font-family: var(--f-display); font-weight: 500; font-size: 16px; padding: 16px 18px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; transition: filter .15s, transform .1s; }
+.btn-main:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-main:active:not(:disabled) { transform: scale(.985); }
+.btn-main:disabled { cursor: progress; opacity: .6; }
+.hp { position: absolute; left: -5000px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Pantalla de registro completado */
+.done { padding: 28px 22px; display: grid; gap: 14px; text-align: left; }
+.done .num { font-family: var(--f-mono); font-weight: 600; font-size: clamp(3.4rem, 18vw, 5.4rem); line-height: 1; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--accent); }
+.done .num .z { opacity: .2; color: var(--ink); }
+.done h2 { font-size: 22px; }
+.done p { margin: 0; color: var(--muted); }
+.done .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Panel del equipo */
+.readout { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); padding: 12px 18px; display: grid; gap: 2px; min-width: 0; }
+.readout .eyebrow { justify-content: space-between; gap: 16px; }
+.digits { font-family: var(--f-mono); font-weight: 600; font-size: clamp(2.8rem, 9vw, 4.4rem); line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.digits .z { opacity: .18; }
+.digits.bump { animation: bump .5s cubic-bezier(.2, .9, .3, 1.4); }
+@keyframes bump { 35% { transform: translateY(-4px); color: var(--accent); } }
+.readout small { font-size: 12.5px; color: var(--muted); }
+.status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.status i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); flex: none; }
+.status.bad i { background: var(--danger); }
+.layout { display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 18px; align-items: start; }
+.side { display: grid; gap: 18px; min-width: 0; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.panel { padding: 18px 20px 20px; display: grid; gap: 14px; }
+.poster-img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; display: block; }
+.url { font-family: var(--f-mono); font-size: 12px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; overflow-wrap: anywhere; user-select: all; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn-ghost { appearance: none; cursor: pointer; border: 1px solid var(--line); background: var(--surface); padding: 8px 12px; border-radius: 9px; font-size: 13.5px; font-weight: 500; display: inline-flex; gap: 6px; align-items: center; text-decoration: none; color: var(--ink); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.note { margin: 0; font-size: 13px; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; }
+@media (max-width: 560px) { .stats { grid-template-columns: minmax(0, 1fr); } }
+.split { display: grid; gap: 7px; }
+.split-l { display: flex; justify-content: space-between; gap: 8px; font-size: 13.5px; }
+.split-l b { font-family: var(--f-mono); font-weight: 600; font-variant-numeric: tabular-nums; }
+.split-l span { color: var(--muted); font-family: var(--f-mono); font-size: 12px; }
+.bar2 { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); }
+.bar2 > i { display: block; height: 100%; transition: width .4s ease; }
+.rows { display: grid; gap: 8px; grid-column: 1 / -1; }
+.row { display: grid; grid-template-columns: 34px minmax(0, 140px) minmax(0, 1fr) 44px; align-items: center; gap: 10px; font-size: 13.5px; }
+.row .sym { font-family: var(--f-display); font-weight: 700; font-size: 13px; color: var(--c); border: 1.5px solid var(--c); border-radius: 6px; text-align: center; padding: 3px 0; }
+.row .track { height: 10px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.row .track i { display: block; height: 100%; background: var(--c); width: 0; transition: width .4s ease; }
+.row b { font-family: var(--f-mono); font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 460px) { .row { grid-template-columns: 30px minmax(0, 1fr) 40px; } .row .track { grid-column: 1 / -1; grid-row: 2; } }
+.hist { display: grid; gap: 6px; }
+.hist-bars { display: flex; align-items: flex-end; gap: 6px; height: 120px; border-bottom: 1px solid var(--line); background-image: linear-gradient(var(--line) 1px, transparent 1px); background-size: 100% 40px; }
+.hist-bars .b { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; height: 100%; }
+.hist-bars .b i { display: block; width: 100%; max-width: 44px; background: var(--accent); border-radius: 4px 4px 0 0; transition: height .4s ease; }
+.hist-bars .b span { font-family: var(--f-mono); font-size: 11px; margin-bottom: 3px; font-variant-numeric: tabular-nums; }
+.hist-x { display: flex; gap: 6px; }
+.hist-x span { flex: 1 1 0; min-width: 0; text-align: center; font-family: var(--f-mono); font-size: 11px; color: var(--muted); }
+.empty { margin: 0; padding: 18px; border: 1px dashed var(--line); border-radius: 10px; color: var(--muted); font-size: 14px; text-align: center; background: var(--surface-2); }
+#buscar { flex: 1 1 200px; min-width: 0; padding: 9px 12px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface-2); font-size: 14px; }
+.log { list-style: none; margin: 0; padding: 0; display: grid; max-height: 520px; overflow-y: auto; border-top: 1px solid var(--line); }
+.log li { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 9px 2px; border-bottom: 1px solid var(--line); }
+.log .n, .log time { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.log .who b { display: block; font-weight: 600; overflow-wrap: anywhere; line-height: 1.3; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 3px; }
+.chip { font-size: 11.5px; font-weight: 600; padding: 1px 8px; border-radius: 999px; color: var(--c); background: color-mix(in srgb, var(--c) 12%, transparent); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); white-space: nowrap; }
+.login { max-width: 420px; padding: 22px 20px; display: grid; gap: 12px; }
+
+footer { font-size: 12.5px; color: var(--muted); }
+@media (max-width: 420px) {
+  .wrap { padding-inline: 16px; }
+  .sec, .panel, .submit { padding-inline: 16px; }
+  .el { min-height: 88px; padding: 7px 8px; }
+  .el-sym { font-size: 24px; }
+  .el-name { font-size: 11.5px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Al imprimir desde el panel solo sale el cartel */
+#cartel-print { display: none; }
+@media print {
+  body { background: #fff; }
+  body * { visibility: hidden; }
+  #cartel-print, #cartel-print * { visibility: visible; }
+  #cartel-print { position: fixed; inset: 0; display: block !important; }
+  #cartel-print img { width: 100%; height: auto; }
+  @page { size: A4 portrait; margin: 10mm; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-bio" viewBox="0 0 20 20"><path d="M6 2c0 5 8 4 8 8s-8 3-8 8M14 2c0 5-8 4-8 8s8 3 8 8M7 5h6M7 15h6M8 10h4"/></symbol>
+    <symbol id="i-qui" viewBox="0 0 20 20"><path d="M7.5 2h5M8.5 2v5.5L4 15.5A1.6 1.6 0 0 0 5.4 18h9.2a1.6 1.6 0 0 0 1.4-2.5l-4.5-8V2M6 12.5h8"/></symbol>
+    <symbol id="i-fis" viewBox="0 0 20 20"><circle cx="10" cy="10" r="1.3"/><ellipse cx="10" cy="10" rx="8" ry="3.2"/><ellipse cx="10" cy="10" rx="8" ry="3.2" transform="rotate(60 10 10)"/><ellipse cx="10" cy="10" rx="8" ry="3.2" transform="rotate(120 10 10)"/></symbol>
+    <symbol id="i-mat" viewBox="0 0 20 20"><path d="M15 4H5l5.5 6L5 16h10"/></symbol>
+    <symbol id="i-ast" viewBox="0 0 20 20"><circle cx="10" cy="10" r="4.5"/><ellipse cx="10" cy="10" rx="9" ry="3" transform="rotate(-20 10 10)"/></symbol>
+    <symbol id="i-geo" viewBox="0 0 20 20"><path d="M2 17l5.5-9 3.5 5 2-3 5 7zM2 17h16"/></symbol>
+    <symbol id="i-tec" viewBox="0 0 20 20"><rect x="5" y="5" width="10" height="10" rx="1.5"/><path d="M8 2v3M12 2v3M8 15v3M12 15v3M2 8h3M2 12h3M15 8h3M15 12h3"/></symbol>
+    <symbol id="i-soc" viewBox="0 0 20 20"><circle cx="7" cy="7" r="2.6"/><circle cx="14" cy="8" r="2.1"/><path d="M2 17c0-3 2.3-5 5-5s5 2 5 5M12.5 12.3c.5-.2 1-.3 1.5-.3 2.2 0 4 1.6 4 4.5"/></symbol>
+  </defs>
+</svg>
+
+<!-- ================= VISTA PÚBLICA: registro por QR ================= -->
+<div class="wrap pub" id="v-registro" hidden>
+  <header class="brand">
+    <div class="eyebrow">Registro de visitantes</div>
+    <h1>Feria del Ingenio<span class="dot">.</span></h1>
+    <p class="lead">Bienvenido a la feria científica. Registra tu visita en menos de un minuto.</p>
+    <div class="pill" id="pub-total" hidden>Visitantes registrados <b id="pub-total-n">0</b></div>
+  </header>
+
+  <ul class="areas" aria-label="Áreas de la feria">
+    <li><svg class="i"><use href="#i-bio"/></svg>Biología</li>
+    <li><svg class="i"><use href="#i-qui"/></svg>Química</li>
+    <li><svg class="i"><use href="#i-fis"/></svg>Física</li>
+    <li><svg class="i"><use href="#i-mat"/></svg>Matemáticas</li>
+    <li><svg class="i"><use href="#i-ast"/></svg>Astronomía</li>
+    <li><svg class="i"><use href="#i-geo"/></svg>Geología</li>
+    <li><svg class="i"><use href="#i-tec"/></svg>Tecnología</li>
+    <li><svg class="i"><use href="#i-soc"/></svg>Ciencias sociales</li>
+  </ul>
+
+  <form class="card" id="reg" novalidate autocomplete="off">
+    <div class="sec">
+      <label for="nombre">
+        <span class="eyebrow"><svg class="i"><use href="#i-soc"/></svg>Ciencias sociales</span>
+        <span class="lab-title">Tu nombre</span>
+      </label>
+      <input class="field" id="nombre" name="nombre" type="text" maxlength="60" placeholder="Ej. María González" autocapitalize="words" enterkeyhint="next">
+      <div class="hp" aria-hidden="true"><label for="web">No llenar</label><input id="web" name="web" type="text" tabindex="-1"></div>
+    </div>
+
+    <fieldset class="sec">
+      <legend>
+        <span class="eyebrow"><svg class="i"><use href="#i-bio"/></svg>Biología</span>
+        <span class="lab-title">Sexo</span>
+      </legend>
+      <div class="sexo">
+        <div>
+          <input class="sr" type="radio" name="sexo" id="sexo-h" value="H">
+          <label class="opt sx" for="sexo-h" style="--c: var(--c-h)">
+            <svg viewBox="0 0 30 30" aria-hidden="true"><circle cx="12" cy="18" r="7"/><path d="M17 13l8-8M18.5 5H25v6.5"/></svg><b>Hombre</b>
+          </label>
+        </div>
+        <div>
+          <input class="sr" type="radio" name="sexo" id="sexo-m" value="M">
+          <label class="opt sx" for="sexo-m" style="--c: var(--c-m)">
+            <svg viewBox="0 0 30 30" aria-hidden="true"><circle cx="15" cy="11" r="7"/><path d="M15 18v10M10.5 23.5h9"/></svg><b>Mujer</b>
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="sec">
+      <legend>
+        <span class="eyebrow"><svg class="i"><use href="#i-qui"/></svg>Química · Tabla de visitantes</span>
+        <span class="lab-title">¿Quién eres?</span>
+      </legend>
+      <div class="grp">
+        <div class="grp-h">Estudiante</div>
+        <div class="tiles t2" id="tiles-est"></div>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Adulto</div>
+        <div class="tiles t3" id="tiles-adu"></div>
+      </div>
+    </fieldset>
+
+    <div class="submit">
+      <p class="err" id="err" role="alert" hidden></p>
+      <button class="btn-main" type="submit" id="btn">Registrar mi visita</button>
+    </div>
+  </form>
+
+  <section class="card done" id="done" hidden aria-live="polite">
+    <div class="eyebrow"><svg class="i"><use href="#i-fis"/></svg>Registro completado</div>
+    <div class="num" id="done-num"></div>
+    <h2 id="done-title"></h2>
+    <p>Ya formas parte del conteo de la Feria del Ingenio. Disfruta los proyectos.</p>
+    <div class="tags" id="done-tags"></div>
+    <button class="btn-main" type="button" id="otra">Registrar a otra persona</button>
+  </section>
+
+  <footer>Feria del Ingenio · Tus datos se usan solo para el conteo de asistencia.</footer>
+</div>
+
+<!-- ================= VISTA DEL EQUIPO: panel y cartel QR ================= -->
+<div class="wrap adm" id="v-panel" hidden>
+  <header class="top">
+    <div class="brand">
+      <div class="eyebrow">Panel del equipo</div>
+      <h1>Feria del Ingenio<span class="dot">.</span></h1>
+      <div class="status" id="status" hidden><i></i><span id="status-t"></span></div>
+    </div>
+    <div class="readout" id="readout" hidden>
+      <div class="eyebrow"><span style="display:inline-flex;gap:7px;align-items:center"><svg class="i"><use href="#i-fis"/></svg>Física · Contador</span><span id="hoy">Hoy 0</span></div>
+      <div class="digits" id="total"></div>
+      <small id="ultima"></small>
+    </div>
+  </header>
+
+  <form class="card login" id="login">
+    <div class="eyebrow"><svg class="i"><use href="#i-tec"/></svg>Tecnología · Acceso</div>
+    <label for="clave" class="lab-title">Clave del panel</label>
+    <input class="field" id="clave" type="password" autocomplete="current-password">
+    <p class="err" id="login-err" hidden></p>
+    <button class="btn-main" type="submit" id="login-btn">Entrar al panel</button>
+    <p class="note">La clave está al inicio del archivo Code.gs (CLAVE_PANEL).</p>
+  </form>
+
+  <main class="layout" id="dash" hidden>
+    <section class="card panel" aria-labelledby="h-qr">
+      <div>
+        <div class="eyebrow"><svg class="i"><use href="#i-tec"/></svg>Tecnología · Acceso por QR</div>
+        <h2 id="h-qr">Cartel para la entrada</h2>
+      </div>
+      <img class="poster-img" id="poster" alt="Cartel con el código QR para registrarse en la Feria del Ingenio">
+      <div class="actions">
+        <button class="btn-ghost" type="button" id="imprimir">Imprimir cartel</button>
+        <a class="btn-ghost" id="descargar" download="feria-del-ingenio-qr.png">Descargar imagen</a>
+        <button class="btn-ghost" type="button" id="copiar">Copiar enlace</button>
+      </div>
+      <div class="url" id="url-txt"></div>
+      <p class="note">Si un botón no responde, mantén presionada la imagen (o clic derecho) y elige Guardar imagen.</p>
+    </section>
+
+    <div class="side">
+      <section class="card panel" aria-labelledby="h-stats">
+        <div>
+          <div class="eyebrow"><svg class="i"><use href="#i-mat"/></svg>Matemáticas</div>
+          <h2 id="h-stats">Resumen de asistencia</h2>
+        </div>
+        <div class="stats">
+          <div class="split">
+            <div class="split-l"><span>♂ Hombres</span><span>♀ Mujeres</span></div>
+            <div class="bar2" aria-hidden="true"><i id="b-h" style="background:var(--c-h);width:50%"></i><i id="b-m" style="background:var(--c-m);width:50%"></i></div>
+            <div class="split-l"><b id="v-h">0 · 0%</b><b id="v-m">0 · 0%</b></div>
+          </div>
+          <div class="split">
+            <div class="split-l"><span>Estudiantes</span><span>Adultos</span></div>
+            <div class="bar2" aria-hidden="true"><i id="b-e" style="background:var(--c-se);width:50%"></i><i id="b-a" style="background:var(--c-do);width:50%"></i></div>
+            <div class="split-l"><b id="v-e">0 · 0%</b><b id="v-a">0 · 0%</b></div>
+          </div>
+          <div class="rows" id="rows"></div>
+        </div>
+      </section>
+
+      <section class="card panel" aria-labelledby="h-flujo">
+        <div>
+          <div class="eyebrow"><svg class="i"><use href="#i-fis"/></svg>Física · Flujo</div>
+          <h2 id="h-flujo">Entradas por hora, hoy</h2>
+        </div>
+        <div id="hist"></div>
+      </section>
+
+      <section class="card panel" aria-labelledby="h-log">
+        <div>
+          <div class="eyebrow"><svg class="i"><use href="#i-ast"/></svg>Astronomía · Bitácora de observación</div>
+          <h2 id="h-log">Visitantes registrados</h2>
+        </div>
+        <div class="actions">
+          <label class="sr" for="buscar">Buscar por nombre</label>
+          <input id="buscar" type="search" placeholder="Buscar por nombre…">
+          <a class="btn-ghost" id="excel" target="_blank" rel="noopener">Descargar Excel</a>
+          <a class="btn-ghost" id="hoja" target="_blank" rel="noopener">Abrir hoja de cálculo</a>
+        </div>
+        <div id="log-wrap"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="cartel-print"><img id="poster-print" alt=""></div>
+
+<script>
+// Conecta la página con Google Apps Script sin usar las cuentas de Google del visitante.
+(function () {
+  var API = "https://script.google.com/macros/s/AKfycbz_06ccJH2yReYCTcXyekINTJ58xq-LyVp3MbQJqTOk1-XiViUyGd0zvJnV0CIa8s3j/exec";
+  document.body.setAttribute("data-vista", location.hash === "#panel" ? "panel" : "registro");
+  document.body.setAttribute("data-url", location.origin + location.pathname);
+  function call(accion, datos) {
+    return fetch(API, {
+      method: "POST",
+      credentials: "omit",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ accion: accion, datos: datos })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (!j.ok) throw new Error(j.error || "Error");
+      return j.resultado;
+    });
+  }
+  function runner(ok, fail) {
+    return new Proxy({}, { get: function (_, k) {
+      if (k === "withSuccessHandler") return function (fn) { return runner(fn, fail); };
+      if (k === "withFailureHandler") return function (fn) { return runner(ok, fn); };
+      return function (arg) { call(k, arg).then(function (r) { if (ok) ok(r); }, function (e) { if (fail) fail(e); }); };
+    }});
+  }
+  window.google = { script: { get run() { return runner(null, null); } } };
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var TIPOS = {
+    primaria:      { n: 1, sym: "Pr", label: "Primaria",         grupo: "estudiante", c: "--c-pr" },
+    secundaria:    { n: 2, sym: "Se", label: "Secundaria",       grupo: "estudiante", c: "--c-se" },
+    universitario: { n: 3, sym: "Un", label: "Universitario",    grupo: "adulto",     c: "--c-un" },
+    docente:       { n: 4, sym: "Do", label: "Docente",          grupo: "adulto",     c: "--c-do" },
+    padre:         { n: 5, sym: "Pf", label: "Padre de familia", grupo: "adulto",     c: "--c-pf" }
+  };
+  var ORDER = ["primaria", "secundaria", "universitario", "docente", "padre"];
+  var VISTA = document.body.getAttribute("data-vista");
+  var URL_APP = document.body.getAttribute("data-url") || "";
+
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function pad(n) { return n < 10 ? "0" + n : String(n); }
+  function hhmm(t) { var d = new Date(t); return pad(d.getHours()) + ":" + pad(d.getMinutes()); }
+  function digits(box, n) {
+    var s = String(n), z = s.length < 4 ? "0000".slice(s.length) : "";
+    box.textContent = "";
+    if (z) box.appendChild(el("span", "z", z));
+    box.appendChild(document.createTextNode(s));
+  }
+  function chip(text, color) { var c = el("span", "chip", text); c.style.setProperty("--c", "var(" + color + ")"); return c; }
+  function run() { return google.script.run; }
+  function errMsg(e) { return (e && e.message ? e.message : String(e || "")).replace(/^Error:\s*/, ""); }
+
+  if (VISTA === "panel") initPanel(); else initRegistro();
+
+  // ===================== Registro público =====================
+  function initRegistro() {
+    $("v-registro").hidden = false;
+    ORDER.forEach(function (k) {
+      var t = TIPOS[k];
+      var holder = el("div");
+      var input = el("input", "sr");
+      input.type = "radio"; input.name = "tipo"; input.id = "tipo-" + k; input.value = k;
+      var lab = el("label", "opt el");
+      lab.htmlFor = input.id;
+      lab.style.setProperty("--c", "var(" + t.c + ")");
+      lab.appendChild(el("span", "el-top", String(t.n)));
+      lab.appendChild(el("span", "el-sym", t.sym));
+      lab.appendChild(el("span", "el-name", t.label));
+      holder.appendChild(input); holder.appendChild(lab);
+      $(t.grupo === "estudiante" ? "tiles-est" : "tiles-adu").appendChild(holder);
+    });
+
+    function cargarTotal() {
+      run().withSuccessHandler(function (n) {
+        $("pub-total-n").textContent = String(n).padStart(4, "0");
+        $("pub-total").hidden = false;
+      }).total();
+    }
+    cargarTotal();
+
+    var form = $("reg"), btn = $("btn"), enviando = false;
+    function showErr(m) { $("err").textContent = m; $("err").hidden = !m; }
+
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (enviando) return;
+      var nombre = $("nombre").value.replace(/\s+/g, " ").trim();
+      var sexo = (form.querySelector('input[name="sexo"]:checked') || {}).value;
+      var tipo = (form.querySelector('input[name="tipo"]:checked') || {}).value;
+      var falta = [];
+      if (!nombre) falta.push("tu nombre");
+      if (!sexo) falta.push("si eres hombre o mujer");
+      if (!tipo) falta.push("quién eres (estudiante o adulto)");
+      if (falta.length) {
+        showErr("Falta " + (falta.length === 1 ? falta[0] : falta.slice(0, -1).join(", ") + " y " + falta[falta.length - 1]) + ".");
+        if (!nombre) $("nombre").focus(); else if (!sexo) $("sexo-h").focus(); else $("tipo-primaria").focus();
+        return;
+      }
+      showErr("");
+      enviando = true; btn.disabled = true; btn.textContent = "Guardando…";
+      run()
+        .withSuccessHandler(function (res) {
+          enviando = false; btn.disabled = false; btn.textContent = "Registrar mi visita";
+          mostrarHecho(nombre, sexo, tipo, res && res.numero);
+        })
+        .withFailureHandler(function (e) {
+          enviando = false; btn.disabled = false; btn.textContent = "Registrar mi visita";
+          var m = errMsg(e);
+          showErr(/Faltan datos/.test(m) ? m : "No se pudo guardar tu registro. Revisa tu conexión y vuelve a pulsar Registrar mi visita.");
+        })
+        .registrar({ nombre: nombre, sexo: sexo, tipo: tipo, web: $("web").value });
+    });
+
+    function mostrarHecho(nombre, sexo, tipo, numero) {
+      form.hidden = true;
+      $("done").hidden = false;
+      digits($("done-num"), numero || 0);
+      $("done-num").insertBefore(document.createTextNode("#"), $("done-num").firstChild);
+      $("done-title").textContent = (sexo === "M" ? "¡Bienvenida, " : "¡Bienvenido, ") + nombre.split(" ")[0] + "!";
+      var tags = $("done-tags"); tags.textContent = "";
+      tags.appendChild(chip(sexo === "H" ? "♂ Hombre" : "♀ Mujer", sexo === "H" ? "--c-h" : "--c-m"));
+      tags.appendChild(chip(TIPOS[tipo].sym + " · " + TIPOS[tipo].label, TIPOS[tipo].c));
+      $("pub-total-n").textContent = String(numero || 0).padStart(4, "0");
+      $("pub-total").hidden = !numero;
+      window.scrollTo(0, 0);
+    }
+
+    $("otra").addEventListener("click", function () {
+      form.reset();
+      $("done").hidden = true;
+      form.hidden = false;
+      cargarTotal();
+      $("nombre").focus();
+    });
+  }
+
+  // ===================== Panel del equipo =====================
+  function initPanel() {
+    $("v-panel").hidden = false;
+    var clave = "", records = [], lastTotal = null, timer = null;
+
+    ORDER.forEach(function (k) {
+      var t = TIPOS[k];
+      var r = el("div", "row");
+      r.style.setProperty("--c", "var(" + t.c + ")");
+      r.appendChild(el("span", "sym", t.sym));
+      r.appendChild(el("span", null, t.label));
+      var tr = el("span", "track"), i = el("i"); i.id = "bar-" + k; tr.appendChild(i);
+      r.appendChild(tr);
+      var b = el("b", null, "0"); b.id = "val-" + k; r.appendChild(b);
+      $("rows").appendChild(r);
+    });
+
+    $("login").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      clave = $("clave").value;
+      $("login-btn").disabled = true;
+      cargar(true);
+    });
+
+    function cargar(primera) {
+      run()
+        .withSuccessHandler(function (data) {
+          if (primera) {
+            $("login").hidden = true;
+            $("dash").hidden = false; $("readout").hidden = false; $("status").hidden = false;
+            dibujarCartel();
+            $("hoja").href = data.hoja;
+            $("excel").href = data.excel;
+          }
+          records = data.registros || [];
+          render();
+          $("status").classList.remove("bad");
+          $("status-t").textContent = "Actualizado " + new Date().toLocaleTimeString("es") + " · se actualiza cada 20 s";
+          programar();
+        })
+        .withFailureHandler(function (e) {
+          if (primera) {
+            $("login-btn").disabled = false;
+            $("login-err").textContent = /Clave/.test(errMsg(e)) ? "Esa clave no es correcta. Revisa CLAVE_PANEL en Code.gs." : "No se pudo conectar. Inténtalo de nuevo.";
+            $("login-err").hidden = false;
+            return;
+          }
+          $("status").classList.add("bad");
+          $("status-t").textContent = "Sin conexión. Reintentando…";
+          programar();
+        })
+        .panel(clave);
+    }
+    function programar() { clearTimeout(timer); timer = setTimeout(function () { cargar(false); }, 20000); }
+
+    function render() {
+      var sorted = records.slice().sort(function (a, b) { return a.t - b.t; });
+      var total = sorted.length, now = new Date();
+      var c = { H: 0, M: 0, estudiante: 0, adulto: 0 }, today = [];
+      ORDER.forEach(function (k) { c[k] = 0; });
+      sorted.forEach(function (r) {
+        c[r.sexo]++; c[r.tipo]++; c[TIPOS[r.tipo].grupo]++;
+        var d = new Date(r.t);
+        if (d.toDateString() === now.toDateString()) today.push(r);
+      });
+      var dg = $("total");
+      digits(dg, total);
+      if (lastTotal !== null && total > lastTotal) { dg.classList.remove("bump"); void dg.offsetWidth; dg.classList.add("bump"); }
+      lastTotal = total;
+      $("hoy").textContent = "Hoy " + today.length;
+      $("ultima").textContent = total ? "Última entrada " + hhmm(sorted[total - 1].t) + " · " + sorted[total - 1].nombre : "Aún no hay entradas";
+
+      function split(a, b, ia, ib, va, vb) {
+        var tot = a + b;
+        $(ia).style.width = (tot ? a * 100 / tot : 50) + "%";
+        $(ib).style.width = (tot ? b * 100 / tot : 50) + "%";
+        $(va).textContent = a + " · " + (tot ? Math.round(a * 100 / tot) : 0) + "%";
+        $(vb).textContent = b + " · " + (tot ? Math.round(b * 100 / tot) : 0) + "%";
+      }
+      split(c.H, c.M, "b-h", "b-m", "v-h", "v-m");
+      split(c.estudiante, c.adulto, "b-e", "b-a", "v-e", "v-a");
+      var max = Math.max.apply(null, ORDER.map(function (k) { return c[k]; }));
+      ORDER.forEach(function (k) {
+        $("bar-" + k).style.width = (max ? c[k] * 100 / max : 0) + "%";
+        $("val-" + k).textContent = c[k];
+      });
+      renderHist(today);
+      renderLog(sorted);
+    }
+
+    function renderHist(today) {
+      var box = $("hist"); box.textContent = "";
+      if (!today.length) { box.appendChild(el("p", "empty", "Las barras por hora aparecen con el primer registro del día.")); return; }
+      var bins = {}, lo = 24, hi = -1, h;
+      today.forEach(function (r) { h = new Date(r.t).getHours(); bins[h] = (bins[h] || 0) + 1; lo = Math.min(lo, h); hi = Math.max(hi, h); });
+      while (hi - lo < 5) { if (hi < 23) hi++; else lo--; }
+      var max = 0;
+      for (h = lo; h <= hi; h++) max = Math.max(max, bins[h] || 0);
+      var wrap = el("div", "hist"), bars = el("div", "hist-bars"), xs = el("div", "hist-x");
+      for (h = lo; h <= hi; h++) {
+        var v = bins[h] || 0, b = el("div", "b");
+        b.title = pad(h) + ":00–" + pad(h) + ":59 · " + v + (v === 1 ? " visitante" : " visitantes");
+        if (v) b.appendChild(el("span", null, String(v)));
+        var bar = el("i"); bar.style.height = (max ? v * 82 / max : 0) + "%";
+        b.appendChild(bar); bars.appendChild(b);
+        xs.appendChild(el("span", null, pad(h) + "h"));
+      }
+      wrap.appendChild(bars); wrap.appendChild(xs); box.appendChild(wrap);
+    }
+
+    function fold(s) { return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); }
+    function renderLog(sorted) {
+      var box = $("log-wrap"); box.textContent = "";
+      if (!sorted.length) { box.appendChild(el("p", "empty", "Todavía no hay visitantes. Coloca el cartel con el QR en la entrada para empezar.")); return; }
+      var q = fold($("buscar").value.trim()), list = [];
+      for (var i = sorted.length - 1; i >= 0; i--) if (!q || fold(sorted[i].nombre).indexOf(q) !== -1) list.push(sorted[i]);
+      if (!list.length) { box.appendChild(el("p", "empty", "Ningún nombre coincide con la búsqueda.")); return; }
+      var ul = el("ul", "log");
+      list.slice(0, 200).forEach(function (r) {
+        var t = TIPOS[r.tipo], li = el("li");
+        li.appendChild(el("span", "n", "#" + String(r.n).padStart(4, "0")));
+        var who = el("div", "who"); who.appendChild(el("b", null, r.nombre));
+        var meta = el("div", "meta");
+        meta.appendChild(chip(r.sexo === "H" ? "♂ Hombre" : "♀ Mujer", r.sexo === "H" ? "--c-h" : "--c-m"));
+        meta.appendChild(chip(t.sym + " · " + t.label, t.c));
+        who.appendChild(meta); li.appendChild(who);
+        li.appendChild(el("time", null, hhmm(r.t)));
+        ul.appendChild(li);
+      });
+      box.appendChild(ul);
+      if (list.length > 200) box.appendChild(el("p", "note", "Mostrando los 200 más recientes de " + list.length + ". La lista completa está en la hoja de cálculo."));
+    }
+    $("buscar").addEventListener("input", render);
+
+    // ----- Cartel con QR (A4, 1240 × 1754 px) -----
+    function dibujarCartel() {
+      $("url-txt").textContent = URL_APP;
+      var go = function () {
+        var W = 1240, H = 1754, cv = document.createElement("canvas");
+        cv.width = W; cv.height = H;
+        var x = cv.getContext("2d");
+        var INK = "#0F1A2A", ACC = "#2340C9", MUT = "#586779";
+        x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, W, H);
+        // papel cuadriculado
+        x.strokeStyle = "rgba(35,64,140,0.08)"; x.lineWidth = 2;
+        for (var gx = 0; gx <= W; gx += 48) { x.beginPath(); x.moveTo(gx, 0); x.lineTo(gx, H); x.stroke(); }
+        for (var gy = 0; gy <= H; gy += 48) { x.beginPath(); x.moveTo(0, gy); x.lineTo(W, gy); x.stroke(); }
+        x.textAlign = "center"; x.textBaseline = "alphabetic";
+        x.fillStyle = MUT; x.font = "500 30px 'IBM Plex Mono', monospace";
+        x.fillText("REGISTRO DE VISITANTES", W / 2, 170);
+        x.fillStyle = INK; x.font = "700 104px Unbounded, 'Arial Black', sans-serif";
+        x.fillText("Feria del", W / 2, 300);
+        x.fillText("Ingenio", W / 2 - 30, 420);
+        var w2 = x.measureText("Ingenio").width;
+        x.fillStyle = ACC; x.textAlign = "left"; x.fillText(".", W / 2 - 30 + w2 / 2 + 4, 420); x.textAlign = "center";
+        // QR
+        var qr = qrcode(0, "M"); qr.addData(URL_APP || "https://example.com"); qr.make();
+        var n = qr.getModuleCount(), size = 820, cell = Math.floor(size / (n + 8)), real = cell * (n + 8);
+        var ox = Math.round((W - real) / 2), oy = 500;
+        x.fillStyle = "#FFFFFF"; x.fillRect(ox, oy, real, real);
+        x.strokeStyle = INK; x.lineWidth = 6; x.strokeRect(ox - 3, oy - 3, real + 6, real + 6);
+        x.fillStyle = INK;
+        for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (qr.isDark(r, c)) x.fillRect(ox + (c + 4) * cell, oy + (r + 4) * cell, cell, cell);
+        var by = oy + real + 120;
+        x.fillStyle = INK; x.font = "500 58px Unbounded, 'Arial Black', sans-serif";
+        x.fillText("Escanea y regístrate", W / 2, by);
+        x.fillStyle = MUT; x.font = "500 36px 'Instrument Sans', 'Segoe UI', sans-serif";
+        x.fillText("Abre la cámara de tu celular y apunta al código.", W / 2, by + 70);
+        x.font = "500 26px 'IBM Plex Mono', monospace";
+        x.fillText("Biología · Química · Física · Matemáticas · Astronomía", W / 2, H - 130);
+        x.fillText("Geología · Tecnología · Ciencias sociales", W / 2, H - 88);
+        var png = cv.toDataURL("image/png");
+        $("poster").src = png; $("poster-print").src = png; $("descargar").href = png;
+      };
+      if (document.fonts && document.fonts.load) {
+        Promise.all([
+          document.fonts.load("700 104px Unbounded"), document.fonts.load("500 58px Unbounded"),
+          document.fonts.load("500 30px 'IBM Plex Mono'"), document.fonts.load("500 36px 'Instrument Sans'")
+        ]).then(go, go);
+      } else go();
+    }
+
+    $("imprimir").addEventListener("click", function () {
+      try { window.print(); } catch (e) {}
+    });
+    $("copiar").addEventListener("click", function () {
+      var b = this;
+      function ok() { b.textContent = "Enlace copiado"; setTimeout(function () { b.textContent = "Copiar enlace"; }, 2000); }
+      function sel() { var r = document.createRange(); r.selectNodeContents($("url-txt")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(URL_APP).then(ok, sel); else sel();
+    });
+  }
+})();
+</script>
+</body>
+</html>
